@@ -128,7 +128,13 @@ class Slider:
         self._arduino.close()
 
 
-def main(port: str, baud: int):
+def main():
+    parser = argparse.ArgumentParser(description="Use an arduino slider as a mouse")
+    parser.add_argument("port", type=str, help="USB Port")
+    parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
+    args = parser.parse_args()
+    port, baud = args.port, args.baud
+
     mouse = Controller()
     _, monitor = select_monitor()
 
@@ -155,8 +161,4 @@ def main(port: str, baud: int):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Use an arduino slider as a mouse")
-    parser.add_argument("port", type=str, help="USB Port")
-    parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
-    args = parser.parse_args()
-    main(args.port, args.baud)
+    main()

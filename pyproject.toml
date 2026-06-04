@@ -17,6 +17,9 @@ dependencies = [
 [project.scripts]
 slider-mouse = "slider_mouse:main"
 
+[tool.setuptools]
+py-modules = ["slider_mouse"]
+
 [tool.ruff]
 # Assume Python 3.12
 target-version = "py312"
