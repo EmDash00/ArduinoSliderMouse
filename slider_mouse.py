@@ -15,7 +15,7 @@ from pynput.keyboard import Key, KeyCode
 from pynput.mouse import Controller
 from serial import Serial
 
-SLIDER_MAX = 663
+DEFAULT_SLIDER_MAX = 663
 
 
 def select_monitor() -> tuple[int, Monitor]:
@@ -96,10 +96,18 @@ def slider_to_mouse(pos, monitor: Monitor):
 
 
 class Slider:
-    def __init__(self, port: str, baud: int, reverse: bool = False) -> None:
+    def __init__(
+        self,
+        port: str,
+        baud: int,
+        lims: tuple[int, int],
+        reverse: bool = False,
+    ) -> None:
         self._arduino = Serial(port, baud, timeout=1)
         self._pos = 0
         self._reverse = reverse
+        self._min, self._max = lims
+        self._range = self._max - self._min
 
     def get_position(self):
         data = self._arduino.readline()
@@ -107,13 +115,15 @@ class Slider:
         if len(data) < 6:
             return -1
 
-        _, _, slider_pos = struct.unpack("hhh", data[:6])
+        _, _, raw_slider_pos = struct.unpack("hhh", data[:6])
         # print(slider_pos)
 
         if self._reverse:
-            slider_pos = SLIDER_MAX - slider_pos
+            slider_pos = self._max - raw_slider_pos
+        else:
+            slider_pos = raw_slider_pos - self._min
 
-        self._pos = slider_pos / SLIDER_MAX
+        self._pos = slider_pos / self._range
 
         return self._pos
 
@@ -129,11 +139,28 @@ class Slider:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Use an arduino slider as a mouse")
+    parser = argparse.ArgumentParser(
+        description="Use an arduino slider as a mouse. Toggable with F1."
+    )
     parser.add_argument("port", type=str, help="USB Port")
     parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
+    parser.add_argument(
+        "--slider_min",
+        "-m",
+        type=int,
+        help="Minimum slider value",
+        default=0,
+    )
+    parser.add_argument(
+        "--slider_max",
+        "-M",
+        type=int,
+        help="Maximum slider value",
+        default=DEFAULT_SLIDER_MAX,
+    )
     args = parser.parse_args()
     port, baud = args.port, args.baud
+    SLIDER_MIN, SLIDER_MAX = args.slider_min, args.slider_max
 
     mouse = Controller()
     _, monitor = select_monitor()
@@ -151,7 +178,7 @@ def main():
     listener = keyboard.Listener(on_press=toggle_hotkey)
     listener.start()
 
-    with Slider(port, baud, reverse=True) as slider:
+    with Slider(port, baud, lims=(SLIDER_MIN, SLIDER_MAX), reverse=True) as slider:
         while True:
             if (pos := slider.get_position()) < 0:
                 continue
