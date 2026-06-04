@@ -2,13 +2,14 @@
 
 import argparse
 import struct
-import time
 from threading import Thread
 
 import cv2
 import mss
 import numpy as np
 from mss.models import Monitor
+from pynput import keyboard
+from pynput.keyboard import Key, KeyCode
 
 # import mouse
 from pynput.mouse import Controller
@@ -86,10 +87,11 @@ def select_monitor() -> tuple[int, Monitor]:
 
         return selected_monitor_index, sct.monitors[selected_monitor_index]
 
+
 def slider_to_mouse(pos, monitor: Monitor):
     return (
         int(monitor["left"] + monitor["width"] * pos),
-        int(monitor["top"] + 0.5 * monitor["height"])
+        int(monitor["top"] + 0.5 * monitor["height"]),
     )
 
 
@@ -126,24 +128,30 @@ class Slider:
         self._arduino.close()
 
 
-
-
 def main(port: str, baud: int):
     mouse = Controller()
     _, monitor = select_monitor()
 
+    enabled = True
+
+    def toggle_hotkey(key: Key | KeyCode | None):
+        nonlocal enabled
+
+        if key == keyboard.Key.f1:
+            enabled = not enabled
+
+        print(f"Slider enabled: {enabled}")
+
+    listener = keyboard.Listener(on_press=toggle_hotkey)
+    listener.start()
+
     with Slider(port, baud, reverse=True) as slider:
         while True:
-
-            if ((pos := slider.get_position()) < 0):
+            if (pos := slider.get_position()) < 0:
                 continue
 
-            # print(slider_to_mouse(pos, monitor))
-            mouse.position = slider_to_mouse(pos, monitor)
-            # print(mouse.position)
-            # print(mouse.position)
-            # mouse.move(slider_pos / SLIDER_MAX * 1680, 490, absolute=True)
-            # time.sleep(0.01)
+            if enabled:
+                mouse.position = slider_to_mouse(pos, monitor)
 
 
 if __name__ == "__main__":
