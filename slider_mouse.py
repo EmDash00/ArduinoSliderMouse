@@ -183,7 +183,8 @@ def main():
                 enabled = not enabled
                 print(f"Slider enabled: {enabled}")
             case Key.enter:
-                mouse.click(Button.left)
+                if enabled:
+                    mouse.click(Button.left)
 
 
 
