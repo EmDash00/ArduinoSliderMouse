@@ -2,6 +2,7 @@
 
 import argparse
 import struct
+import time
 from threading import Thread
 
 import cv2
