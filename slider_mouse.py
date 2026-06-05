@@ -88,10 +88,12 @@ def select_monitor() -> tuple[int, Monitor]:
         return selected_monitor_index, sct.monitors[selected_monitor_index]
 
 
-def slider_to_mouse(pos, monitor: Monitor):
+def slider_to_mouse(pos, monitor: Monitor, y0: int):
+    if y0 < 0:
+        y0 = int(monitor["top"] + 0.5 * monitor["height"])
     return (
         int(monitor["left"] + monitor["width"] * pos),
-        int(monitor["top"] + 0.5 * monitor["height"]),
+        y0
     )
 
 
@@ -116,15 +118,18 @@ class Slider:
             return -1
 
         _, _, raw_slider_pos = struct.unpack("hhh", data[:6])
-        # print(slider_pos)
+        # print(raw_slider_pos)
 
         if self._reverse:
             slider_pos = self._max - raw_slider_pos
         else:
             slider_pos = raw_slider_pos - self._min
 
+        # print(slider_pos)
+
         self._pos = slider_pos / self._range
 
+        print(self._pos)
         return self._pos
 
     @property
@@ -145,6 +150,9 @@ def main():
     parser.add_argument("port", type=str, help="USB Port")
     parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
     parser.add_argument(
+        "--y_pos", "-y", type=int, help="Mouse y position", default=-1
+    )
+    parser.add_argument(
         "--slider_min",
         "-m",
         type=int,
@@ -161,6 +169,7 @@ def main():
     args = parser.parse_args()
     port, baud = args.port, args.baud
     SLIDER_MIN, SLIDER_MAX = args.slider_min, args.slider_max
+    y0 = args.y_position
 
     mouse = Controller()
     _, monitor = select_monitor()
@@ -184,7 +193,7 @@ def main():
                 continue
 
             if enabled:
-                mouse.position = slider_to_mouse(pos, monitor)
+                mouse.position = slider_to_mouse(pos, monitor, y0)
 
 
 if __name__ == "__main__":
