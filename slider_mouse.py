@@ -179,7 +179,7 @@ def main():
         nonlocal enabled
 
         match key:
-            case Key.f12:
+            case Key.f2:
                 enabled = not enabled
                 print(f"Slider enabled: {enabled}")
             case Key.enter:
