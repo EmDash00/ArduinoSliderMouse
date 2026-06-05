@@ -191,8 +191,11 @@ def main():
             if (pos := slider.get_position()) < 0:
                 continue
 
-            if enabled:
-                mouse.position = slider_to_mouse(pos, monitor, y0)
+            if not enabled:
+                time.sleep(0.01)
+                continue
+
+            mouse.position = slider_to_mouse(pos, monitor, y0)
 
 
 if __name__ == "__main__":
