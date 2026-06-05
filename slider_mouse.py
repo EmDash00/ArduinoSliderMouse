@@ -129,7 +129,6 @@ class Slider:
 
         self._pos = slider_pos / self._range
 
-        print(self._pos)
         return self._pos
 
     @property
