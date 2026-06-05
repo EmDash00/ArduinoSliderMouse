@@ -178,9 +178,14 @@ def main():
     def toggle_hotkey(key: Key | KeyCode | None):
         nonlocal enabled
 
-        if key == keyboard.Key.f12:
-            enabled = not enabled
-            print(f"Slider enabled: {enabled}")
+        match key:
+            case Key.f12:
+                enabled = not enabled
+                print(f"Slider enabled: {enabled}")
+            case Key.enter:
+                mouse.click(Button.left)
+
+
 
     listener = keyboard.Listener(on_press=toggle_hotkey)
     listener.start()
