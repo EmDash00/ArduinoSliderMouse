@@ -169,7 +169,7 @@ def main():
     args = parser.parse_args()
     port, baud = args.port, args.baud
     SLIDER_MIN, SLIDER_MAX = args.slider_min, args.slider_max
-    y0 = args.y_position
+    y0 = args.y_pos
 
     mouse = Controller()
     _, monitor = select_monitor()
