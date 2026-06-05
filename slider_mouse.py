@@ -178,7 +178,7 @@ def main():
     def toggle_hotkey(key: Key | KeyCode | None):
         nonlocal enabled
 
-        if key == keyboard.Key.f1:
+        if key == keyboard.Key.f12:
             enabled = not enabled
 
         print(f"Slider enabled: {enabled}")
