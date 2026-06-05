@@ -193,7 +193,6 @@ def main():
                 continue
 
             if not enabled:
-                time.sleep(0.01)
                 continue
 
             mouse.position = slider_to_mouse(pos, monitor, y0)
