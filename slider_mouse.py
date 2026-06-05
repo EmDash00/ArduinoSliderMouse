@@ -12,7 +12,7 @@ from pynput import keyboard
 from pynput.keyboard import Key, KeyCode
 
 # import mouse
-from pynput.mouse import Controller
+from pynput.mouse import Button, Controller
 from serial import Serial
 
 DEFAULT_SLIDER_MAX = 663
