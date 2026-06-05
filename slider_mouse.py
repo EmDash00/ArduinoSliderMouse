@@ -180,8 +180,7 @@ def main():
 
         if key == keyboard.Key.f12:
             enabled = not enabled
-
-        print(f"Slider enabled: {enabled}")
+            print(f"Slider enabled: {enabled}")
 
     listener = keyboard.Listener(on_press=toggle_hotkey)
     listener.start()
