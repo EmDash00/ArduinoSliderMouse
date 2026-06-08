@@ -125,7 +125,7 @@ class Slider:
         else:
             slider_pos = raw_slider_pos - self._min
 
-        # print(slider_pos)
+        print(slider_pos)
 
         self._pos = slider_pos / self._range
 
