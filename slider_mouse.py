@@ -148,9 +148,8 @@ def main():
     )
     parser.add_argument("port", type=str, help="USB Port")
     parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
-    parser.add_argument(
-        "--y_pos", "-y", type=int, help="Mouse y position", default=-1
-    )
+    parser.add_argument("--y_pos", "-y", type=int, help="Mouse y position", default=-1)
+    parser.add_argument("--reverse",  type=bool, help="Reverse the slider", default=-1)
     parser.add_argument(
         "--slider_min",
         "-m",
@@ -168,6 +167,7 @@ def main():
     args = parser.parse_args()
     port, baud = args.port, args.baud
     SLIDER_MIN, SLIDER_MAX = args.slider_min, args.slider_max
+    reverse = args.reverse
     y0 = args.y_pos
 
     mouse = Controller()
@@ -191,7 +191,7 @@ def main():
     listener = keyboard.Listener(on_press=toggle_hotkey)
     listener.start()
 
-    with Slider(port, baud, lims=(SLIDER_MIN, SLIDER_MAX), reverse=True) as slider:
+    with Slider(port, baud, lims=(SLIDER_MIN, SLIDER_MAX), reverse=reverse) as slider:
         while True:
             if (pos := slider.get_position()) < 0:
                 continue
