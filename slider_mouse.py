@@ -125,8 +125,6 @@ class Slider:
         else:
             slider_pos = raw_slider_pos - self._min
 
-        print(slider_pos)
-
         self._pos = slider_pos / self._range
 
         return self._pos
@@ -199,6 +197,7 @@ def main():
             if not enabled:
                 continue
 
+            print(slider_to_mouse(pos, monitor, y0))
             mouse.position = slider_to_mouse(pos, monitor, y0)
 
 
