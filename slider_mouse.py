@@ -125,6 +125,7 @@ class Slider:
         else:
             slider_pos = raw_slider_pos - self._min
 
+        # print(slider_pos)
         self._pos = slider_pos / self._range
 
         return self._pos
@@ -147,7 +148,11 @@ def main():
     parser.add_argument("port", type=str, help="USB Port")
     parser.add_argument("--baud", "-b", type=int, help="Baud rate", default=9600)
     parser.add_argument("--y_pos", "-y", type=int, help="Mouse y position", default=-1)
-    parser.add_argument("--reverse",  type=bool, help="Reverse the slider", default=-1)
+    parser.add_argument(
+        "--reverse",
+        help="Reverse the slider",
+        action="store_true",
+    )
     parser.add_argument(
         "--slider_min",
         "-m",
