@@ -202,7 +202,6 @@ def main():
             if not enabled:
                 continue
 
-            print(slider_to_mouse(pos, monitor, y0))
             mouse.position = slider_to_mouse(pos, monitor, y0)
 
 
